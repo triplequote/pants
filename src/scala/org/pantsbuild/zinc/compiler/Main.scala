@@ -236,7 +236,8 @@ object Main {
       }
     } catch {
       case e: CompileFailed =>
-        log.error("Compile failed " + Util.timing(startTime))
+        if (e.problems.size == 0) log.error(e.tostring)
+        log.error(s"Compile failed ${e.toString}" + Util.timing(startTime))
         exit(1)
       case e: Exception =>
         if (isDebug) e.printStackTrace

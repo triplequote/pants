@@ -11,6 +11,10 @@ from pants.build_graph.injectables_mixin import InjectablesMixin
 from pants.java.jar.jar_dependency import JarDependency
 from pants.subsystem.subsystem import Subsystem
 
+import ptvsd
+
+# ptvsd.enable_attach()
+# ptvsd.wait_for_attach()  # blocks execution until debugger is attached
 
 # full_version - the full scala version to use.
 major_version_info = namedtuple('major_version_info', ['full_version'])
@@ -53,9 +57,14 @@ class ScalaPlatform(JvmToolMixin, ZincLanguageMixin, InjectablesMixin, Subsystem
 
   @classmethod
   def _create_compiler_jardep(cls, version):
+    return cls.create_jardep('scala-compiler', version)
+
+  @classmethod
+  def _create_hydra_compiler_jardep(cls, version):
     return JarDependency(org='com.triplequote',
-                         name='scala-compiler',
-                         rev=scala_build_info[version].full_version + '-hydra39')
+                         name='hydra_' + scala_build_info[version].full_version,
+                         rev= '2.1.13')
+
 
   @classmethod
   def versioned_tool_name(cls, tool, version):
@@ -70,6 +79,11 @@ class ScalaPlatform(JvmToolMixin, ZincLanguageMixin, InjectablesMixin, Subsystem
       cls.register_jvm_tool(register,
                             cls.versioned_tool_name('scalac', version),
                             classpath=[cls._create_compiler_jardep(version)])
+      # register also Hydra
+      cls.register_jvm_tool(register,
+                            cls.versioned_tool_name('hydra', version),
+                            classpath=[cls._create_compiler_jardep(version)])
+
 
     def register_scala_repl_tool(version, with_jline=False):
       classpath = [cls._create_compiler_jardep(version)]  # Note: the REPL is in the compiler jar.
@@ -142,6 +156,11 @@ class ScalaPlatform(JvmToolMixin, ZincLanguageMixin, InjectablesMixin, Subsystem
   def compiler_classpath_entries(self, products):
     """Returns classpath entries for the scalac tool."""
     return self._tool_classpath('scalac', products)
+    # return self.tool_classpath_entries_from_products(
+    #     products,
+    #     self.versioned_tool_name("hydra", ScalaPlatform.full_version(self.version)),
+    #     scope=self.options_scope,
+    #   )
 
   def style_classpath(self, products):
     """Returns classpath as paths for scalastyle."""
