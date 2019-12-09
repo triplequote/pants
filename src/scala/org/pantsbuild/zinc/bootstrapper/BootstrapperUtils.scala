@@ -15,19 +15,19 @@ import sbt.internal.inc.{AnalyzingCompiler, RawCompiler}
 import sbt.util.Logger
 
 object BootstrapperUtils {
-  val CompilerInterfaceId = "compiler-interface"
   val JavaClassVersion = System.getProperty("java.class.version")
 
   def compilerInterface(output: File, compilerBridgeSrc: File, compilerInterface: File, scalaInstance: XScalaInstance, log: Logger): Unit = {
-    def compile(targetJar: File): Unit =
+    def compile(targetJar: File): Unit = {
       AnalyzingCompiler.compileSources(
         Seq(compilerBridgeSrc),
         targetJar,
         Seq(compilerInterface),
-        CompilerInterfaceId,
+        compilerBridgeSrc.getName,
         new RawCompiler(scalaInstance, ClasspathOptionsUtil.auto, log),
         log
       )
+    }
 
     val dir = output.getParentFile
     dir.mkdirs()

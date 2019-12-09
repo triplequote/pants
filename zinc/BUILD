@@ -12,7 +12,9 @@ jvm_binary(
     '3rdparty/jvm/com/google/protobuf:protobuf-java',
     # We don't want to inject the compiler bridge into the jar we distribute, but we do want it in
     # this jvm_binary() in order to create native-image versions of our zinc wrapper.
-    '3rdparty/jvm/org/scala-sbt:sbt-compiler-bridge',
+    #'3rdparty/jvm/org/scala-sbt:sbt-compiler-bridge',
+    '3rdparty/jvm/com/triplequote:hydra-bridge',
+    '3rdparty/jvm/com/triplequote:hydra',
   ],
   description='zinc compiler -- the scala compiler in nailgun',
 )

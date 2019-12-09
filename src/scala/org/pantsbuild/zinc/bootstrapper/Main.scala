@@ -14,7 +14,7 @@ object Main {
       case Some(cliArgs) => {
         val scalaInstance = ScalaUtils
           .scalaInstance(cliArgs.scalaCompiler,
-                         Seq(cliArgs.scalaReflect),
+                         cliArgs.scalaReflect +: cliArgs.extraJars,
                          cliArgs.scalaLibrary)
 
         // As per https://github.com/pantsbuild/pants/issues/6160, this is a workaround

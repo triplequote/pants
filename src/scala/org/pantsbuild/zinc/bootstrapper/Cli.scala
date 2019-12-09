@@ -13,7 +13,8 @@ case class Configuration(
   compilerBridgeSource: File = new File("."),
   scalaCompiler: File = new File("."),
   scalaLibrary: File = new File("."),
-  scalaReflect: File = new File(".")
+  scalaReflect: File = new File("."),
+  extraJars: Seq[File] = Seq.empty
 )
 
 object Cli {
@@ -70,5 +71,11 @@ object Cli {
         if (file.exists) success else failure(s"$file does not exist.")
       }
       .text("Path to the scala reflection library.")
+
+    opt[Seq[File]]("extra-jars")
+      .required()
+      .valueName("<jar1>,<jar2>...")
+      .action((x, c) => c.copy(extraJars = x))
+      .text("Extra jars to include.")
   }
 }

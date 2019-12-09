@@ -27,7 +27,7 @@ Licensed under the Apache License, Version 2.0 (see LICENSE).
            to confusing failures later when classpaths are constructed and used.
            We setup the maven central resolver to require successful pom downloads here. -->
       <ibiblio name="maven-central" m2compatible="true" descriptor="required"/>
-
+      <ibiblio name="triplequote-libs" m2compatible="true" descriptor="required" root="https://repo.triplequote.com/artifactory/libs-release/"/>
       <!-- The mvn standard local filesystem repo/cache -->
       <filesystem name="local.m2" m2compatible="true" local="true" checkmodified="true">
         <ivy pattern="${m2.repo.dir}/${m2.repo.pom}"/>

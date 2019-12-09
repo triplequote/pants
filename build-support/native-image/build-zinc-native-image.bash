@@ -98,6 +98,8 @@ function fetch_scala_compiler_jars {
 function fetch_pants_zinc_wrapper_jars {
   pants_zinc_compiler_version='0.0.15'
   pants_underlying_zinc_dependency_version='1.1.7'
+  # pants_underlying_hydra_dependency_version='2.1.13'
+
   # TODO: `native-image` emits a warning on later protobuf versions, which the pantsbuild
   # `zinc-compiler` artifact will pull in unless we exclude them here and also explicitly add a
   # protobuf artifact. We should fix this by making the change to the org.pantsbuild:zinc-compiler
@@ -105,6 +107,7 @@ function fetch_pants_zinc_wrapper_jars {
   "$(get_coursier)" fetch \
                     "org.pantsbuild:zinc-compiler_2.12:${pants_zinc_compiler_version}" \
                     "org.scala-sbt:compiler-bridge_2.12:${pants_underlying_zinc_dependency_version}" \
+                    # "com.triplequote:hydra-bridge_1_0:${pants_underlying_hydra_dependency_version}" \
                     --exclude com.google.protobuf:protobuf-java \
                     com.google.protobuf:protobuf-java:2.5.0
 }
