@@ -80,6 +80,7 @@ class Zinc:
           # signatures of the nailMain methods in our custom nails:
           # http://www.martiansoftware.com/nailgun/quickstart.html#nails
           Shader.exclude_package('com.martiansoftware.nailgun', recursive=True),
+          Shader.exclude_package('com.triplequote', recursive=True),
         ]
 
       cls.register_jvm_tool(register,
