@@ -202,6 +202,20 @@ class JvmToolMixin:
     return classpath[0]
 
   @classmethod
+  def tool_jar_entries_from_products(cls, products, key, scope):
+    """Get a ClasspathEntries for the jar for the tool previously registered under key in the given scope.
+
+    :param products: The products of the current pants run.
+    :type products: :class:`pants.goal.products.Products`
+    :param string key: The key the tool configuration was registered under.
+    :param string scope: The scope the tool configuration was registered under.
+    :returns: A list of paths.
+    :rtype: list
+    """
+    classpath = cls.tool_classpath_entries_from_products(products, key, scope)
+    return classpath
+
+  @classmethod
   def tool_classpath_from_products(cls, products, key, scope):
     """Get a classpath of paths for the tool previously registered under key in the given scope.
 

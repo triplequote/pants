@@ -19,7 +19,6 @@ major_version_info = namedtuple('major_version_info', ['full_version'])
 # Note that the compiler has two roles here: as a tool (invoked by the compile task), and as a
 # runtime library (when compiling plugins, which require the compiler library as a dependency).
 scala_build_info = {
-  '2.10': major_version_info(full_version='2.10.6'),
   '2.11': major_version_info(full_version='2.11.12'),
   '2.12': major_version_info(full_version='2.12.8'),
 }
@@ -38,6 +37,11 @@ class ScalaPlatform(JvmToolMixin, ZincLanguageMixin, InjectablesMixin, Subsystem
   options_scope = 'scala'
 
   @classmethod
+  def full_version(cls, scala_version):
+    """Returns this ScalaPlatform's full scala version."""
+    return scala_build_info[scala_version].full_version
+
+  @classmethod
   def create_jardep(cls, name, version):
     return JarDependency(org='org.scala-lang',
                          name=name,
@@ -49,7 +53,9 @@ class ScalaPlatform(JvmToolMixin, ZincLanguageMixin, InjectablesMixin, Subsystem
 
   @classmethod
   def _create_compiler_jardep(cls, version):
-    return cls.create_jardep('scala-compiler', version)
+    return JarDependency(org='com.triplequote',
+                         name='scala-compiler',
+                         rev=scala_build_info[version].full_version + '-hydra39')
 
   @classmethod
   def versioned_tool_name(cls, tool, version):
@@ -94,7 +100,7 @@ class ScalaPlatform(JvmToolMixin, ZincLanguageMixin, InjectablesMixin, Subsystem
                                 'explicit dependencies.')
 
     register('--version', advanced=True, default='2.12',
-             choices=['2.10', '2.11', '2.12', 'custom'], fingerprint=True,
+             choices=['2.11', '2.12', 'custom'], fingerprint=True,
              help='The scala platform version. If --version=custom, the targets '
                   '//:scala-library, //:scalac, //:scala-repl and //:scalastyle will be used, '
                   'and must exist.  Otherwise, defaults for the specified version will be used.')
@@ -105,10 +111,6 @@ class ScalaPlatform(JvmToolMixin, ZincLanguageMixin, InjectablesMixin, Subsystem
                   'those suffixes.')
 
     # Register the fixed version tools.
-    register_scala_compiler_tool('2.10')
-    register_scala_repl_tool('2.10', with_jline=True)  # 2.10 repl requires jline.
-    register_style_tool('2.10')
-
     register_scala_compiler_tool('2.11')
     register_scala_repl_tool('2.11')
     register_style_tool('2.11')
