@@ -81,8 +81,8 @@ class ScalaPlatform(JvmToolMixin, ZincLanguageMixin, InjectablesMixin, Subsystem
                             classpath=[cls._create_compiler_jardep(version)])
       # register also Hydra
       cls.register_jvm_tool(register,
-                            cls.versioned_tool_name('hydra', version),
-                            classpath=[cls._create_compiler_jardep(version)])
+                            cls.versioned_tool_name('hydra', scala_build_info[version].full_version),
+                            classpath=[cls._create_hydra_compiler_jardep(version)])
 
 
     def register_scala_repl_tool(version, with_jline=False):
@@ -155,12 +155,12 @@ class ScalaPlatform(JvmToolMixin, ZincLanguageMixin, InjectablesMixin, Subsystem
 
   def compiler_classpath_entries(self, products):
     """Returns classpath entries for the scalac tool."""
-    return self._tool_classpath('scalac', products)
-    # return self.tool_classpath_entries_from_products(
-    #     products,
-    #     self.versioned_tool_name("hydra", ScalaPlatform.full_version(self.version)),
-    #     scope=self.options_scope,
-    #   )
+    # return self._tool_classpath('scalac', products)
+    return self.tool_classpath_entries_from_products(
+        products,
+        self.versioned_tool_name("hydra", ScalaPlatform.full_version(self.version)),
+        scope=self.options_scope,
+      )
 
   def style_classpath(self, products):
     """Returns classpath as paths for scalastyle."""

@@ -373,6 +373,30 @@ class BaseZincCompile(JvmCompile):
 
     jvm_options.extend(self._jvm_options)
 
+    source_path = os.path.join(get_buildroot(), ctx.target.address.spec_path)
+    dot_hydra_dir = os.path.join(get_buildroot(), '.hydra')
+    hydra_store = os.path.join(dot_hydra_dir, ctx.target.address.target_name)
+    hydra_tag = ctx.target.address.target_name + '/compile'
+    timings_file = os.path.join(dot_hydra_dir, 'timings.csv')
+    # hydra_tag = ctx.target.
+
+    hydra_extra_args = [
+      '-S-sourcepath',
+      '-S' + source_path,
+      '-S-YrootDirectory',
+      '-S' + os.path.join(get_buildroot(), ctx.target.target_base),
+      '-S-YhydraStore',
+      '-S{}'.format(hydra_store),
+      '-S-cpus',
+      '-S4',
+      '-S-YhydraTag',
+      '-S{}'.format(hydra_tag),
+      '-S-YtimingsFile',
+      '-S{}'.format(timings_file)
+    ]
+    print(*hydra_extra_args, sep='\n')
+    zinc_args.extend(hydra_extra_args)
+
     zinc_args.extend(ctx.sources)
 
     self.log_zinc_file(ctx.analysis_file)

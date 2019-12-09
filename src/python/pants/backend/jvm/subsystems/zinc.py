@@ -87,7 +87,7 @@ class Zinc:
       cls.register_jvm_tool(register,
                             Zinc.ZINC_BOOTSTRAPPER_TOOL_NAME,
                             classpath=[
-                              JarDependency('org.pantsbuild', 'zinc-bootstrapper_2.12', '0.0.12'),
+                              JarDependency('org.pantsbuild', 'zinc-bootstrapper_2.12', '0.0.13-SNAP5'),
                             ],
                             main=Zinc.ZINC_BOOTSTRAPER_MAIN,
                             custom_rules=shader_rules,
@@ -166,8 +166,8 @@ class Zinc:
 
     @classmethod
     def _compiler_bridge(cls, products):
-      # return cls.tool_jar_entry_from_products(products, 'hydra-bridge', cls.options_scope)
-      return cls.tool_jar_entry_from_products(products, 'compiler-bridge', cls.options_scope)
+      return cls.tool_jar_entry_from_products(products, 'hydra-bridge', cls.options_scope)
+      # return cls.tool_jar_entry_from_products(products, 'compiler-bridge', cls.options_scope)
 
     @classmethod
     def _compiler_extra_jars(cls, products):
@@ -333,8 +333,8 @@ class Zinc:
       hasher.update(cp_entry.directory_digest.fingerprint.encode())
     key = hasher.hexdigest()[:12]
 
-    # return os.path.join(self._workdir(), 'zinc', 'hydra-bridge', key)
-    return os.path.join(self._workdir(), 'zinc', 'compiler-bridge', key)
+    return os.path.join(self._workdir(), 'zinc', 'hydra-bridge', key)
+    # return os.path.join(self._workdir(), 'zinc', 'compiler-bridge', key)
 
   def _relative_to_buildroot(self, path):
     """A utility function to create relative paths to the work dir"""
@@ -354,12 +354,12 @@ class Zinc:
         ('--scala-library', self.scala_library),
         ('--scala-reflect', self.scala_reflect),
       )
-    #extra_jars = map(lambda cp_entry: cp_entry.path, self._compiler_extra_jars)
+    extra_jars = map(lambda cp_entry: cp_entry.path, self._compiler_extra_jars)
     # extra_jars = map(lambda cp_entry: self._relative_to_buildroot(cp_entry.path), self._compiler_extra_jars)
-    extra_jars_string = ''# ','.join(str(path) for path in extra_jars)
+    extra_jars_string = ','.join(str(path) for path in extra_jars)
     bootstrapper_args = [
         '--out', self._relative_to_buildroot(bridge_jar),
-        #'--extra-jars', extra_jars_string,
+        '--extra-jars', extra_jars_string,
       ]
     for arg, cp_entry in bootstrap_cp_entries:
       bootstrapper_args.append(arg)
@@ -399,8 +399,8 @@ class Zinc:
                     This is mostly needed to use its scheduler to create digests of the relevant jars.
     :return: The absolute path to the compiled scala-compiler-bridge jar.
     """
-    # bridge_jar_name = 'hydra-bridge.jar'
-    bridge_jar_name = 'scala-compiler-bridge.jar'
+    bridge_jar_name = 'hydra-bridge.jar'
+    # bridge_jar_name = 'scala-compiler-bridge.jar'
     bridge_jar = os.path.join(self._compiler_bridge_cache_dir, bridge_jar_name)
     global_bridge_cache_dir = os.path.join(self._zinc_factory.get_options().pants_bootstrapdir, fast_relpath(self._compiler_bridge_cache_dir,  self._workdir()))
     globally_cached_bridge_jar = os.path.join(global_bridge_cache_dir, bridge_jar_name)
